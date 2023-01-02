@@ -6,7 +6,9 @@ import {
   addDoc,
   getDoc,
   onSnapshot,
-  deleteDoc, doc
+  deleteDoc,
+  doc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -31,7 +33,12 @@ export const saveTask = (title, desc) => {
 
 export const getTasks = () => getDocs(collection(db, "tasks"));
 
-// recibe la funcion que se llama callback 
-export const onGetTasks = (callback) => onSnapshot(collection(db, 'tasks'), callback)
+// recibe la funcion que se llama callback
+export const onGetTasks = (callback) =>
+  onSnapshot(collection(db, "tasks"), callback);
 
-export const deleteTask = (id) => deleteDoc(doc(db, 'tasks', id))
+export const deleteTask = (id) => deleteDoc(doc(db, "tasks", id));
+
+export const getTask = (id) => getDoc(doc(db, "tasks", id));
+
+export const updateTask = (id, newfields) => updateDoc(doc(db, 'tasks', id), newfields)
