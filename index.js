@@ -7,11 +7,12 @@ let editStatus = false
 let idTask = ''
 window.addEventListener("DOMContentLoaded", async () => {
   onGetTasks((querySnapshot) => {
-    let html = "";
+    // Lo colocamos para que no se duplique cada vez que se crea un nuevo doc 
+    taskContent.innerHTML = ''
     querySnapshot.forEach((doc) => {
       const task = doc.data();
 
-      html += `
+      taskContent.innerHTML += `
                 <div>
                     <h3>${task.title}</h3>
                     <p>${task.desc}</p>
@@ -20,8 +21,6 @@ window.addEventListener("DOMContentLoaded", async () => {
                 </div>
            `;
     });
-
-    taskContent.innerHTML = html;
 
     const btnDelete = taskContent.querySelectorAll('.btn-delete')
 
