@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" id="file" class="form-contron-file" accept=".jpg,.jpg,.png"/> 
+    <button type="submit" id="send-image" disabled >Enviar</button>
+    <div id="BrandWepb">
+        <img src="" alt="" id="brand-image" />
+    </div>
+    <script>
+        const fileBrand = document.getElementById('file')
+        const sendImage = document.getElementById("send-image")
+        const brandImage = document.querySelector("#brand-image")
+        const reader = new FileReader()
+        let webpImage = ""
+        
+        fileBrand.addEventListener("change", () => {
+            const fileName = fileBrand.files[0].name.slice(0, -4)
+            reader.readAsDataURL(fileBrand.files[0])
+            reader.onload = e => {
+                const image = new Image()
+                image.src = e.target.result
+                image.onload = () => {
+                    const {
+                        height,
+                        width
+                    } = image;
+
+                    if(height != 200 || width != 400){
+                        alert("Las medidas para subir una imagen debe ser de 400x200px");
+                        return false;
+                    }
+
+                    const canvas = document.createElement('canvas')                    
+                    canvas.width = image.naturalWidth
+                    canvas.height = image.naturalHeight
+
+                    canvas.getContext('2d').drawImage(image, 0, 0)
+                    
+                    canvas.toBlob((blob) => {
+                        webpImage = new File([blob],  `${fileName}.webp`, {type: blob.type})
+                        brandImage.src = URL.createObjectURL(webpImage)
+                        sendImage.disabled = false
+                    }, 'image/webp')
+                    //console.log(webpImage)
+                }
+            }
+
+        })
+
+        sendImage.addEventListener("click", async ()=> {
+            console.log(webpImage.name)
+
+            const api = 'https://assets.digicorp.com.bo/upload_brand_image.php';
+
+            let formData = new FormData();
+            formData.append("file", webpImage, webpImage.name);
+
+            await fetch(api, {
+                mode: "no-cors",
+                method: "POST",
+                //headers: { 'Content-Type': 'multipart/form-data' },
+                body: formData
+            });
+            console.log('The file has been uploaded successfully.');
+        })
+    </script>
+</body>
+</html>
