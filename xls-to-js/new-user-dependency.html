@@ -23,23 +23,6 @@
 <script src="https://www.gstatic.com/firebasejs/7.15.1/firebase-analytics.js"></script>
 
 <script>
-    // Your web app's Firebase configuration
-    var firebaseConfig = {
-        apiKey: "AIzaSyCAbW0c8X8LggWF3s-m6YTe7cfx8ONlbxE",
-        authDomain: "digicorp-app.firebaseapp.com",
-        databaseURL: "https://digicorp-app.firebaseio.com",
-        projectId: "digicorp-app",
-        storageBucket: "digicorp-app.appspot.com",
-        messagingSenderId: "883116850918",
-        appId: "1:883116850918:web:522b6e8dae134b39b68527",
-        measurementId: "G-EVM2LH8TN1"
-    };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    //firebase.analytics();
-</script>
-
-<script>
     const fileUpload = document.getElementById("load-dependecies-file")
     const buttonUpload = document.getElementById("load-dependecies-button")
     let selectedFile = ""    
@@ -68,7 +51,6 @@
 
     })
     
-    const db = firebase.firestore();
 
     function newDependency(val) {
         console.log(val)
