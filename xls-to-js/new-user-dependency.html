@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Digicorp</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<div id="table-general">
+    <input class="form-control" type="file" id="load-dependecies-file" accept=".xls,.xlsx"  >
+    <button id="load-dependecies-button">Cargar dependecias</button>
+</div>
+
+</body>
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.15.1/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.15.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.15.1/firebase-analytics.js"></script>
+
+<script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyCAbW0c8X8LggWF3s-m6YTe7cfx8ONlbxE",
+        authDomain: "digicorp-app.firebaseapp.com",
+        databaseURL: "https://digicorp-app.firebaseio.com",
+        projectId: "digicorp-app",
+        storageBucket: "digicorp-app.appspot.com",
+        messagingSenderId: "883116850918",
+        appId: "1:883116850918:web:522b6e8dae134b39b68527",
+        measurementId: "G-EVM2LH8TN1"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    //firebase.analytics();
+</script>
+
+<script>
+    const fileUpload = document.getElementById("load-dependecies-file")
+    const buttonUpload = document.getElementById("load-dependecies-button")
+    let selectedFile = ""    
+    let temporal = ""
+
+    fileUpload.addEventListener("change", e =>  selectedFile = e.target.files[0])
+    
+    buttonUpload.addEventListener("click", () => {
+        if(selectedFile){
+            let fileReader = new FileReader
+            fileReader.readAsBinaryString(selectedFile)
+            fileReader.onload = e => {
+                let data = e.target.result
+                let workbook =  XLSX.read(data,{type:"binary"})
+
+                workbook.SheetNames.forEach(sheet => {
+                    let rowObject = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet]);
+                   temporal = rowObject
+                   
+                    for (let i = 0; i < temporal.length; i++) {
+                        newDependency(temporal[i]);
+                    } 
+                })
+            }
+        }
+
+    })
+    
+    const db = firebase.firestore();
+
+    function newDependency(val) {
+        console.log(val)
+
+        db.collection("dependecies-test").doc(val.CODIGO.toString()).set({
+            userId: val.CODIGO,
+            userEmail: val.EMAIL,
+            userName: val.NOMBRE,
+            userRegion: val.REGIONAL,
+            boss1Id:  val.CODIGO_1,
+            boss1Email: val.EMAIL_1,
+            boss1Name: val.NOMBRE_1,
+            boss2Id: val.CODIGO_2 || '',
+            boss2Email: val.EMAIL_2 || '',
+            boss2Name: val.NOMBRE_2 || '',
+        }).then(function (docRef) {
+            console.log("Document written with ID: ");
+        }).catch(function (error) {
+            console.error("Error adding document: ", error);
+        });
+    }
+</script>
+
+</html>
